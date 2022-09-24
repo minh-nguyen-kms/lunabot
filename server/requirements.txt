@@ -1,0 +1,13 @@
+sounddevice
+soundfile
+pyshine
+RPi.GPIO
+
+speechrecognition
+pyaudio
+pyttsx3
+
+opencv-python
+asyncio
+websockets
+awebus

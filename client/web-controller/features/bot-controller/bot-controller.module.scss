@@ -1,0 +1,10 @@
+.botController {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 40vw;
+    height: 20vh;
+    width: 100vw;
+    position: fixed;
+    bottom: 20vh;
+    left: 0;
+}

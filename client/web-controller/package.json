@@ -1,0 +1,35 @@
+{
+  "name": "web-controller",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 9001",
+    "build": "next build",
+    "start": "next start -p 9001",
+    "lint": "eslint ./ --fix",
+    "lint:ci": "npx eslint ./"
+  },
+  "dependencies": {
+    "next": "12.3.0",
+    "nipplejs": "^0.9.1",
+    "prettier": "^2.7.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "sass": "^1.54.9",
+    "socket.io": "^4.5.2",
+    "socket.io-client": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.16",
+    "@types/react": "18.0.19",
+    "@types/react-dom": "18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "eslint": "8.23.0",
+    "eslint-config-next": "12.3.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "typescript": "4.8.3"
+  }
+}
