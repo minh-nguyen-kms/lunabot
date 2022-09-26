@@ -1,13 +1,9 @@
 
 #!/usr/bin/python
 
-from PCA9685 import PCA9685
+from .PCA9685 import PCA9685
 import time
 
-Dir = [
-    'forward',
-    'backward',
-]
 pwm = PCA9685(0x40, debug=False)
 pwm.setPWMFreq(50)
 
@@ -20,27 +16,25 @@ class MotorDriver():
         self.BIN1 = 3
         self.BIN2 = 4
 
-    def run(self, motor, dir, speed):
-        if speed > 100:
-            return
+    def run(self, motor, speed):
+        speed_abs = abs(speed)
+        if speed_abs > 100:
+            speed_abs = 100
+        
         if(motor == 0):
-            pwm.setDutycycle(self.PWMA, speed)
-            if(dir == Dir[0]):
-                print ("1")
+            pwm.setDutycycle(self.PWMA, speed_abs)
+            if(speed > 0):
                 pwm.setLevel(self.AIN1, 0)
                 pwm.setLevel(self.AIN2, 1)
             else:
-                print ("2")
                 pwm.setLevel(self.AIN1, 1)
                 pwm.setLevel(self.AIN2, 0)
         else:
-            pwm.setDutycycle(self.PWMB, speed)
-            if(dir == Dir[0]):
-                print ("3")
+            pwm.setDutycycle(self.PWMB, speed_abs)
+            if(speed > 0):
                 pwm.setLevel(self.BIN1, 0)
                 pwm.setLevel(self.BIN2, 1)
             else:
-                print ("4")
                 pwm.setLevel(self.BIN1, 1)
                 pwm.setLevel(self.BIN2, 0)
 

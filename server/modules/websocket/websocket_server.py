@@ -52,7 +52,7 @@ class WebsocketServer():
 
     def on_message_received(self, ws, message):
         addr = ws.remote_address
-        self.log.info(f'{addr}: "{message}"')
+        self.log.debug(f'{addr}: "{message}"')
 
         msg = json.loads(message);
         event = msg.get('event', None);

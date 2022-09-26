@@ -1,5 +1,6 @@
 import ipaddress
 import sys
+
 sys.path.insert(0, '/home/pi/ntm/lunabot/server')
 
 import logging
@@ -10,6 +11,7 @@ from libs.event_bus.event_bus import EventBus
 from libs.event_bus.event_names import EventNames
 from modules.camera.camera_controller import CameraController
 from modules.websocket.websocket_server import WebsocketServer
+from modules.mortor.motor_controller import MotorController
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -21,6 +23,10 @@ async def main():
     #init camera
     camera = CameraController(event_bus=event_bus, host_name=ipAddr, port=9101)
     # event_bus.emit(EventNames.CAMERA_START_STREAMING)
+
+    #init motor
+    motor = MotorController(event_bus=event_bus)
+    motor.start_listening()
 
     #init websocket
     websocket = WebsocketServer(event_bus=event_bus, host_name=ipAddr, port=9102)
