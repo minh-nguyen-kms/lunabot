@@ -1,8 +1,7 @@
 import { MovingPad } from './moving-pad/moving-pad';
 import styles from './bot-controller.module.scss';
-import { JoystickManager } from 'nipplejs';
-import { useCallback, useRef } from 'react';
-import { Socket } from 'socket.io-client';
+import { EventData, JoystickOutputData } from 'nipplejs';
+import { memo, useCallback, useMemo, useRef } from 'react';
 import { SOCKET_EVENT_NAMES, useSocket } from '../../hooks/use-socket';
 import { CameraPad } from './camera-pad/camera-pad';
 
@@ -11,19 +10,21 @@ const MOVING_STREAMING_TIMEOUT = 500;
 export interface IMovingDirection {
   x: string;
   y: string;
+  xSpeed?: number;
+  ySpeed?: number;
 }
 
 let movingTimeOut: NodeJS.Timer | null;
 const continuesEmitMoving = (
-  socket: Socket | undefined,
+  socketEmit: <T>(event: string, data?: T) => void,
   dir: IMovingDirection,
 ) => {
-  if (!socket) {
+  if (!socketEmit) {
     return;
   }
 
   // emit first event
-  socket.emit(SOCKET_EVENT_NAMES.MOVING, dir);
+  socketEmit(SOCKET_EVENT_NAMES.MOVING, dir);
 
   const isMoving = dir.y !== '';
   const isRotating = dir.x !== '';
@@ -42,64 +43,79 @@ const continuesEmitMoving = (
 
   // start streaming moving events
   movingTimeOut = setInterval(() => {
-    socket.emit(SOCKET_EVENT_NAMES.MOVING, dir);
+    socketEmit(SOCKET_EVENT_NAMES.MOVING, dir);
   }, MOVING_STREAMING_TIMEOUT);
 };
 
-export const BotController = () => {
+const BotControllerComponent = () => {
   const verticalDirection = useRef('');
+  const verticalSpeed = useRef(0);
   const horizontalDirection = useRef('');
-  const socket = useSocket();
+  const horizontalSpeed = useRef(0);
+  const { socketEmit } = useSocket();
 
   const onDirection = useCallback(() => {
     const dir: IMovingDirection = {
       y: verticalDirection.current,
       x: horizontalDirection.current,
+      xSpeed: horizontalSpeed.current,
+      ySpeed: verticalSpeed.current,
     };
-    // continuesEmitMoving(socket, dir);
-  }, []);
+    continuesEmitMoving(socketEmit, dir);
+  }, [socketEmit]);
 
-  const leftPadListener = useCallback(
-    (manager: JoystickManager) => {
-      manager.on('plain:up', () => {
-        verticalDirection.current = 'FORWARD';
+  const leftPadListeners = useMemo(
+    () => ({
+      move: (ev: EventData, data: JoystickOutputData) => {
+        const dir = data?.direction?.y?.toUpperCase();
+        verticalDirection.current = dir;
+        verticalSpeed.current = data?.vector?.y;
         onDirection();
-      });
-      manager.on('plain:down', () => {
-        verticalDirection.current = 'BACKWARD';
-        onDirection();
-      });
-      manager.on('end', () => {
+      },
+      end: () => {
         verticalDirection.current = '';
+        verticalSpeed.current = 0;
         onDirection();
-      });
-    },
+      },
+    }),
     [onDirection],
   );
 
-  const rightPadListener = useCallback(
-    (manager: JoystickManager) => {
-      manager.on('plain:left', () => {
-        horizontalDirection.current = 'LEFT';
+  const rightPadListeners = useMemo(
+    () => ({
+      move: (ev: EventData, data: JoystickOutputData) => {
+        const dir = data?.direction?.x?.toUpperCase();
+        horizontalDirection.current = dir;
+        horizontalSpeed.current = data?.vector?.x;
         onDirection();
-      });
-      manager.on('plain:right', () => {
-        horizontalDirection.current = 'RIGHT';
-        onDirection();
-      });
-      manager.on('end', () => {
+      },
+      end: () => {
         horizontalDirection.current = '';
+        horizontalSpeed.current = 0;
         onDirection();
-      });
-    },
+      },
+    }),
     [onDirection],
   );
+
+  const leftOptions = useMemo(() => ({ lockY: true }), []);
+  const rightOptions = useMemo(() => ({ lockX: true }), []);
 
   return (
     <div className={styles.botController}>
       <CameraPad />
-      <MovingPad managerListener={leftPadListener} options={{ lockY: true }} />
-      <MovingPad managerListener={rightPadListener} options={{ lockX: true }} />
+      <MovingPad
+        joyStickId="leftPad"
+        managerListeners={leftPadListeners}
+        options={leftOptions}
+      />
+      <MovingPad
+        joyStickId="rightPad"
+        managerListeners={rightPadListeners}
+        options={rightOptions}
+      />
     </div>
   );
 };
+
+export const BotController = memo(BotControllerComponent);

@@ -26,34 +26,31 @@ export const useSocket = () => {
   const waitSocketConnect = useCallback(
     async (): Promise<WebSocket> =>
       new Promise((resolve, reject) => {
-        if (!socket) {
+        if (!globalSocket) {
           return;
         }
-        if (socket.readyState === WebSocket.OPEN) {
-          resolve(socket);
+        if (globalSocket.readyState === WebSocket.OPEN) {
+          resolve(globalSocket);
           return;
         }
-        socket.onopen = () => {
-          resolve(socket);
+        globalSocket.onopen = () => {
+          resolve(globalSocket);
         };
-        socket.onerror = (error) => {
+        globalSocket.onerror = (error) => {
           reject(error);
         };
       }),
-    [socket],
+    [],
   );
 
-  const socketEmit = useCallback(
-    <T>(event: string, data?: T) => {
-      socket?.send(
-        JSON.stringify({
-          event,
-          data,
-        }),
-      );
-    },
-    [socket],
-  );
+  const socketEmit = useCallback(<T>(event: string, data?: T) => {
+    globalSocket?.send(
+      JSON.stringify({
+        event,
+        data,
+      }),
+    );
+  }, []);
 
   return {
     socket,
