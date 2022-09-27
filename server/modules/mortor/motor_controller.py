@@ -31,7 +31,6 @@ class MotorController():
         self.motor.run(self.r_motor, r_speed * 100)
 
     def on_moving(self, data):
-        # data = json.loads(data_json)
         x_speed = data.get('xSpeed')
         y_speed = data.get('ySpeed')
         self.run_motor(x_speed, y_speed)

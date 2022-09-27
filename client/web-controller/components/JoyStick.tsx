@@ -41,9 +41,7 @@ const JoyStickComponent = ({
       }
 
       let manager: JoystickManager = windowObject.nipples[joyStickId];
-      console.log('load', manager);
       if (manager) {
-        console.log('manager', manager);
         manager.destroy();
       }
       const isLoading = windowObject.isLoadingNipple[joyStickId];

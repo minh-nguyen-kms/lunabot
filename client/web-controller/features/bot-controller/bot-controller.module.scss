@@ -1,4 +1,9 @@
 .botController {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+.movingPadContainer {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 25vw;

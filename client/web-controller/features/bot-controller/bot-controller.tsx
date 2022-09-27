@@ -104,16 +104,18 @@ const BotControllerComponent = () => {
   return (
     <div className={styles.botController}>
       <CameraPad />
-      <MovingPad
-        joyStickId="leftPad"
-        managerListeners={leftPadListeners}
-        options={leftOptions}
-      />
-      <MovingPad
-        joyStickId="rightPad"
-        managerListeners={rightPadListeners}
-        options={rightOptions}
-      />
+      <div className={styles.movingPadContainer}>
+        <MovingPad
+          joyStickId="leftPad"
+          managerListeners={leftPadListeners}
+          options={leftOptions}
+        />
+        <MovingPad
+          joyStickId="rightPad"
+          managerListeners={rightPadListeners}
+          options={rightOptions}
+        />
+      </div>
     </div>
   );
 };

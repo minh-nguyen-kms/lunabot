@@ -30,10 +30,10 @@ class CameraController():
         self.stop_streaming()
 
     def on_camera_is_streaming(self, data):
-        self.event_bus.emit(EventNames.SOCKET_BROAD_CAST, json.dumps({
+        self.event_bus.emit(EventNames.SOCKET_BROAD_CAST, {
             "event": EventNames.CAMERA_IS_STREAMING,
             "data": data
-        }))
+        })
 
     def start_streaming(self):
         print('Start streaming thread')
