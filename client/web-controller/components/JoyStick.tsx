@@ -53,7 +53,7 @@ const JoyStickComponent = ({
           mode: 'static',
           shape: 'circle',
           position: { left: '50%', top: '50%' },
-          size: 180,
+          size: 150,
           catchDistance: 200,
           color: 'red',
           zone,

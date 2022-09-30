@@ -5,7 +5,7 @@ import { memo, useCallback, useMemo, useRef } from 'react';
 import { SOCKET_EVENT_NAMES, useSocket } from '../../hooks/use-socket';
 import { CameraPad } from './camera-pad/camera-pad';
 
-const MOVING_STREAMING_TIMEOUT = 500;
+const MOVING_STREAMING_TIMEOUT = 900;
 
 export interface IMovingDirection {
   x: string;
