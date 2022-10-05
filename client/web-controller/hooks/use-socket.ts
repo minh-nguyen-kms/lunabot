@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 let globalSocket: WebSocket;
 
-const SOCKET_SERVER = 'ws://192.168.1.151:9102';
+// const SOCKET_SERVER = 'ws://192.168.1.19:9102';
 
 export const SOCKET_EVENT_NAMES = {
   DISCONNECT: 'DISCONNECT',
@@ -17,10 +17,14 @@ export const SOCKET_EVENT_NAMES = {
 export const useSocket = () => {
   const [socket, setSocket] = useState<WebSocket>(globalSocket);
   useEffect(() => {
+    if (typeof window == undefined) {
+      return;
+    }
+    const socketServer = `ws://${window.location.hostname}:9102`;
     if (globalSocket) {
       setSocket(globalSocket);
     } else {
-      const currentSocket = new WebSocket(SOCKET_SERVER);
+      const currentSocket = new WebSocket(socketServer);
       globalSocket = currentSocket;
     }
   }, []);
