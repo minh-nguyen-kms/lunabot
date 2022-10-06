@@ -20,6 +20,11 @@ class MotorController():
         self.l_motor = 0
         self.r_motor = 1
 
+        # Righ motor is faster than the left
+        # => slow down it a litle
+        self.l_motor_speed_adjustment = 100 # 100 is the maximum
+        self.r_motor_speed_adjustment = 85
+
         # Auto stop all motor after 1000ms in case lost signal from socket
         self.auto_stop_time_duration = 1000
 
@@ -39,8 +44,8 @@ class MotorController():
         r_speed = y_speed - x_speed
 
         # self.log.debug(f'{l_speed} - {r_speed}')
-        self.motor.run(self.l_motor, l_speed * 100)
-        self.motor.run(self.r_motor, r_speed * 100)
+        self.motor.run(self.l_motor, l_speed * self.l_motor_speed_adjustment)
+        self.motor.run(self.r_motor, r_speed * self.r_motor_speed_adjustment)
 
     def stop_motor(self):
         self.motor.stop(self.l_motor)

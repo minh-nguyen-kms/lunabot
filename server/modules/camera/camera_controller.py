@@ -40,6 +40,7 @@ class CameraController():
         if self.streamer is None:
             self.streamer = StreamServer(event_bus=self.event_bus, host_name=self.host_name, port=self.port)
         self.thread = Thread(target=self.streamer.start_streaming,args=())
+        self.thread.daemon = True
         self.thread.start()
 
         return self.thread
