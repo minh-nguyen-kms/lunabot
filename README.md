@@ -8,3 +8,7 @@
 ### Speech to Text
 - `sudo apt-get install libasound2-dev`
 - https://www.geeksforgeeks.org/python-convert-speech-to-text-and-text-to-speech/
+
+### nodejs
+- sudo apt-get install nodejs
+- sudo apt-get install npm
