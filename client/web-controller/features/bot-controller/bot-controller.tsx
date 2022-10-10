@@ -5,7 +5,7 @@ import { memo, useCallback, useMemo, useRef } from 'react';
 import { SOCKET_EVENT_NAMES, useSocket } from '../../hooks/use-socket';
 import { CameraPad } from './camera-pad/camera-pad';
 
-const MOVING_STREAMING_TIMEOUT = 900;
+const MOVING_STREAMING_TIME_FRAME = 100; //milisecond
 
 export interface IMovingDirection {
   x: string;
@@ -14,7 +14,8 @@ export interface IMovingDirection {
   ySpeed?: number;
 }
 
-let movingTimeOut: NodeJS.Timer | null;
+let movingTimer: NodeJS.Timer | null;
+let nextMovingTime: number = 0;
 const continuesEmitMoving = (
   socketEmit: <T>(event: string, data?: T) => void,
   dir: IMovingDirection,
@@ -23,28 +24,38 @@ const continuesEmitMoving = (
     return;
   }
 
-  // emit first event
-  socketEmit(SOCKET_EVENT_NAMES.MOVING, dir);
-
   const isMoving = dir.y !== '';
   const isRotating = dir.x !== '';
 
-  // stop streaming moving event
-  if (!isMoving && !isRotating && movingTimeOut) {
-    clearInterval(movingTimeOut);
-    movingTimeOut = null;
+  // there is no moving
+  if (!isMoving && !isRotating ) {
+    // Emit stop signal
+    socketEmit(SOCKET_EVENT_NAMES.MOVING, dir);
+    if (movingTimer) {
+      clearTimeout(movingTimer);
+      movingTimer = null;
+    }
     return;
   }
 
-  // clear last streaming
-  if (movingTimeOut) {
-    clearInterval(movingTimeOut);
-  }
 
-  // start streaming moving events
-  movingTimeOut = setInterval(() => {
+  const currentTime = (new Date()).getTime();
+  const timeLeftToNextTick = nextMovingTime - currentTime;
+  if (timeLeftToNextTick <= 0) {
+    // there is no moving signal already
+    // -> Emit immediately
     socketEmit(SOCKET_EVENT_NAMES.MOVING, dir);
-  }, MOVING_STREAMING_TIMEOUT);
+    nextMovingTime = currentTime + MOVING_STREAMING_TIME_FRAME;
+  } else {
+    // delay for next tick to emit moving signal
+    if (movingTimer) {
+      clearTimeout(movingTimer);
+    }
+    movingTimer = setTimeout(() => {
+      socketEmit(SOCKET_EVENT_NAMES.MOVING, dir);
+      nextMovingTime = currentTime + MOVING_STREAMING_TIME_FRAME;
+    }, timeLeftToNextTick);
+  }
 };
 
 const BotControllerComponent = () => {

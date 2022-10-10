@@ -1,12 +1,12 @@
 sounddevice
 soundfile
-pyshine
 RPi.GPIO
 
 speechrecognition
 pyaudio
 pyttsx3
 
+numpy
 opencv-python
 asyncio
 websockets
