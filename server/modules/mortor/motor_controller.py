@@ -23,7 +23,7 @@ class MotorController():
         # Righ motor is faster than the left
         # => slow down it a litle
         self.l_motor_speed_adjustment = 100 # 100 is the maximum
-        self.r_motor_speed_adjustment = 85
+        self.r_motor_speed_adjustment = 87
 
         # Auto stop all motor after 1000ms in case lost signal from socket
         self.auto_stop_time_duration = 1000

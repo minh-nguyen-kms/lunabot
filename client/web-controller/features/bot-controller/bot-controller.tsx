@@ -6,6 +6,7 @@ import { SOCKET_EVENT_NAMES, useSocket } from '../../hooks/use-socket';
 import { CameraPad } from './camera-pad/camera-pad';
 
 const MOVING_STREAMING_TIME_FRAME = 100; //milisecond
+const MOVING_EMITING_TIME_FRAME = 900; //milisecond
 
 export interface IMovingDirection {
   x: string;
@@ -16,7 +17,7 @@ export interface IMovingDirection {
 
 let movingTimer: NodeJS.Timer | null;
 let nextMovingTime: number = 0;
-const continuesEmitMoving = (
+const streamMovingSignal = (
   socketEmit: <T>(event: string, data?: T) => void,
   dir: IMovingDirection,
 ) => {
@@ -57,6 +58,32 @@ const continuesEmitMoving = (
     }, timeLeftToNextTick);
   }
 };
+
+let emitMovingTimer: NodeJS.Timer | null;
+// const continuesEmitMoving = streamMovingSignal;
+const continuesEmitMoving = (
+  socketEmit: <T>(event: string, data?: T) => void,
+  dir: IMovingDirection,
+) => {
+  if (!!emitMovingTimer) {
+    clearInterval(emitMovingTimer);
+  }
+
+  if (!socketEmit) {
+    return;
+  }
+  const isMoving = dir.y !== '';
+  const isRotating = dir.x !== '';
+
+  streamMovingSignal(socketEmit, dir);
+  if (!isMoving && !isRotating){
+    return;
+  }
+
+  emitMovingTimer = setInterval(() => {
+    streamMovingSignal(socketEmit, dir);
+  }, MOVING_EMITING_TIME_FRAME);
+}
 
 const BotControllerComponent = () => {
   const verticalDirection = useRef('');

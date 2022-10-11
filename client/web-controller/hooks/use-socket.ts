@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
-let globalSocket: WebSocket;
+let globalSocket: ReconnectingWebSocket;
 
 // const SOCKET_SERVER = 'ws://192.168.1.19:9102';
 
@@ -15,7 +16,7 @@ export const SOCKET_EVENT_NAMES = {
 };
 
 export const useSocket = () => {
-  const [socket, setSocket] = useState<WebSocket>(globalSocket);
+  const [socket, setSocket] = useState<ReconnectingWebSocket>(globalSocket);
   useEffect(() => {
     if (typeof window == undefined) {
       return;
@@ -24,18 +25,18 @@ export const useSocket = () => {
     if (globalSocket) {
       setSocket(globalSocket);
     } else {
-      const currentSocket = new WebSocket(socketServer);
+      const currentSocket = new ReconnectingWebSocket(socketServer);
       globalSocket = currentSocket;
     }
   }, []);
 
   const waitSocketConnect = useCallback(
-    async (): Promise<WebSocket> =>
+    async (): Promise<ReconnectingWebSocket> =>
       new Promise((resolve, reject) => {
         if (!globalSocket) {
           return;
         }
-        if (globalSocket.readyState === WebSocket.OPEN) {
+        if (globalSocket.readyState === ReconnectingWebSocket.OPEN) {
           resolve(globalSocket);
           return;
         }
