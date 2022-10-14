@@ -1,0 +1,11 @@
+[Unit]
+Description=LunaBot
+After=systemd-networkd-wait-online.service
+Requires=systemd-networkd-wait-online.service
+
+[Service]
+Type=idle
+ExecStart=python /home/pi/ntm/lunabot/server/main.py
+
+[Install]
+WantedBy=systemd-networkd-wait-online.service

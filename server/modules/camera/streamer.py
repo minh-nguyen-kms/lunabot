@@ -43,7 +43,7 @@ class StreamProps(server.BaseHTTPRequestHandler):
                 try:
                     while True:
                         rc,img = self.capture.read()
-                        
+                        img = cv2.rotate(img, cv2.ROTATE_180)
                         frame = cv2.imencode('.JPEG', img,[cv2.IMWRITE_JPEG_QUALITY,self.quality])[1].tobytes()
                         self.wfile.write(b'--FRAME\r\n')
                         self.send_header('Content-Type', 'image/jpeg')

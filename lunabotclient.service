@@ -1,0 +1,10 @@
+[Unit]
+Description=LunaBotClient
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=http-server /home/pi/ntm/lunabot/client/web-controller/out -p 9001
+
+[Install]
+WantedBy=multi-user.target

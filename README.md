@@ -12,3 +12,34 @@
 ### nodejs
 - sudo apt-get install nodejs
 - sudo apt-get install npm
+
+## Start up services
+- /etc/systemd/system/lunabot.service
+```
+[Unit]
+[Unit]
+Description=LunaBot
+After=systemd-networkd-wait-online.service
+Requires=systemd-networkd-wait-online.service
+
+[Service]
+Type=idle
+ExecStart=python /home/pi/ntm/lunabot/server/main.py
+
+[Install]
+WantedBy=systemd-networkd-wait-online.service
+```
+
+- /etc/systemd/system/lunabotclient.service
+```
+[Unit]
+Description=LunaBotClient
+After=network-online.target
+
+[Service]
+Type=idle
+ExecStart=http-server /home/pi/ntm/lunabot/client/web-controller/out -p 9001
+
+[Install]
+WantedBy=network-online.target
+```
