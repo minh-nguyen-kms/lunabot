@@ -13,6 +13,9 @@ export const SOCKET_EVENT_NAMES = {
     CAMERA_STOP_STREAMING: 'CAMERA_STOP_STREAMING',
     CAMERA_IS_STREAMING: 'CAMERA_IS_STREAMING',
   },
+  COMMANDS: {
+    SYSTEM_RESTART: 'SYSTEM_RESTART',
+  },
 };
 
 export const useSocket = () => {
@@ -34,6 +37,7 @@ export const useSocket = () => {
     async (): Promise<ReconnectingWebSocket> =>
       new Promise((resolve, reject) => {
         if (!globalSocket) {
+          reject('No Websocket instance');
           return;
         }
         if (globalSocket.readyState === ReconnectingWebSocket.OPEN) {

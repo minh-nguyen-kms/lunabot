@@ -11,3 +11,6 @@ opencv-python
 asyncio
 websockets
 awebus
+
+aiortc
+aiohttp

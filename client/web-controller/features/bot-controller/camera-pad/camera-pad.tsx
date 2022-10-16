@@ -15,8 +15,9 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
     const onSocketMessage = (ev: MessageEvent<any>) => {
       const msg = JSON.parse(ev.data ?? '{}');
       if (msg?.event === SOCKET_EVENT_NAMES.CAMERA.CAMERA_IS_STREAMING) {
+        const hostName = window.location.hostname;
         const data = JSON.parse(msg.data ?? '{}');
-        const url = `http://${data?.host}:${data?.port}`;
+        const url = `http://${hostName ?? data?.host}:${data?.port}`;
         setStreamUrl(url);
         setIsLoadingCamera(false);
       }
@@ -32,7 +33,7 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
         socket.removeEventListener('message', onSocketMessage);
       }
     };
-  }, [socketEmit, waitSocketConnect]);
+  }, [waitSocketConnect]);
   return (
     <>
       {streamUrl ? (

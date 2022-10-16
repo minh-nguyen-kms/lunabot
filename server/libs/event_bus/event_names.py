@@ -6,4 +6,6 @@ class EventNames():
     CAMERA_STOP_STREAMING = 'CAMERA_STOP_STREAMING'
 
     MOVING = 'MOVING'
+
+    SYSTEM_RESTART = 'SYSTEM_RESTART'
         
