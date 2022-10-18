@@ -8,4 +8,6 @@ class EventNames():
     MOVING = 'MOVING'
 
     SYSTEM_RESTART = 'SYSTEM_RESTART'
+
+    CAMERA_PANTILT = 'CAMERA_PANTILT'
         

@@ -18,6 +18,7 @@ class SystemController():
         event_bus.on(EventNames.SYSTEM_RESTART, self.on_restart)
 
     def on_restart(self, data):
+        self.log.info('Reboot system')
         os.system('sudo reboot')
 
     def stop_litening(self):
@@ -25,15 +26,22 @@ class SystemController():
         self.log.info('Stop System controller')
 
     def runLifeCycle(self):
-        while self.is_life_cycle_runing:
-            pass
+        # Don't need to support life cycle in this version
+
+        # while self.is_life_cycle_runing:
+        #     pass
+        return
         
 
     def start_listening(self):
         self.log.info('Start System controller')
         self.is_life_cycle_runing = True
-        self.thread = Thread(target=self.runLifeCycle,args=())
-        self.thread.daemon = True
-        self.thread.start()
 
-        return self.thread
+        # Don't need to support life cycle in this version
+        
+        # self.thread = Thread(target=self.runLifeCycle,args=())
+        # self.thread.daemon = True
+        # self.thread.start()
+        # return self.thread
+
+        return

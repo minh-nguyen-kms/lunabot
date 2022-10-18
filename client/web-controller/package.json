@@ -17,7 +17,6 @@
     "@mui/material": "^5.10.9",
     "next": "12.3.0",
     "nipplejs": "^0.9.1",
-    "prettier": "^2.7.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "reconnecting-websocket": "^4.4.0",
@@ -30,12 +29,13 @@
     "@types/react": "18.0.19",
     "@types/react-dom": "18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.37.0",
-    "eslint": "8.23.0",
+    "eslint": "^8.23.0",
     "eslint-config-next": "12.3.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "prettier": "2.7.1",
     "typescript": "4.8.3"
   }
 }

@@ -2,15 +2,14 @@ import { Box, SpeedDial } from "@mui/material";
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import NestCamWiredStandIcon from '@mui/icons-material/NestCamWiredStand';
 import { useEffect, useState } from "react";
 import { SOCKET_EVENT_NAMES, useSocket } from "../../../hooks/use-socket";
 import ReconnectingWebSocket from "reconnecting-websocket";
-
-const actions = [
-    { icon: <RestartAltIcon />, name: 'Restart' },
-  ];
+import { useRouter } from "next/router";
 
 export const CommandsPad = () => {
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -47,13 +46,20 @@ export const CommandsPad = () => {
           direction="down"
         >
           <SpeedDialAction
-              icon={<RestartAltIcon />}
-              tooltipTitle="Restart"
-              onClick={() => {
-                socketEmit(SOCKET_EVENT_NAMES.COMMANDS.SYSTEM_RESTART)
-                handleClose();
-              }}
-            />
+            icon={<RestartAltIcon />}
+            tooltipTitle="Restart"
+            onClick={() => {
+              socketEmit(SOCKET_EVENT_NAMES.COMMANDS.SYSTEM_RESTART)
+              handleClose();
+            }}
+          />
+          <SpeedDialAction
+            icon={<NestCamWiredStandIcon />}
+            tooltipTitle="Camera Pan-Tilt"
+            onClick={() => {
+              router.push('/camera-pantilt');
+            }}
+          />
         </SpeedDial>
       // </Box>
     );

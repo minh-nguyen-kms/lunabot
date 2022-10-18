@@ -16,6 +16,7 @@ export const SOCKET_EVENT_NAMES = {
   COMMANDS: {
     SYSTEM_RESTART: 'SYSTEM_RESTART',
   },
+  CAMERA_PANTILT: 'CAMERA_PANTILT',
 };
 
 export const useSocket = () => {
