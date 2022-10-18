@@ -17,7 +17,7 @@ export interface IMovingDirection {
 }
 
 let movingTimer: NodeJS.Timer | null;
-let nextMovingTime: number = 0;
+let nextMovingTime = 0;
 const streamMovingSignal = (
   socketEmit: <T>(event: string, data?: T) => void,
   dir: IMovingDirection,
@@ -30,7 +30,7 @@ const streamMovingSignal = (
   const isRotating = dir.x !== '';
 
   // there is no moving
-  if (!isMoving && !isRotating ) {
+  if (!isMoving && !isRotating) {
     // Emit stop signal
     socketEmit(SOCKET_EVENT_NAMES.MOVING, dir);
     if (movingTimer) {
@@ -40,8 +40,7 @@ const streamMovingSignal = (
     return;
   }
 
-
-  const currentTime = (new Date()).getTime();
+  const currentTime = new Date().getTime();
   const timeLeftToNextTick = nextMovingTime - currentTime;
   if (timeLeftToNextTick <= 0) {
     // there is no moving signal already
@@ -77,14 +76,14 @@ const continuesEmitMoving = (
   const isRotating = dir.x !== '';
 
   streamMovingSignal(socketEmit, dir);
-  if (!isMoving && !isRotating){
+  if (!isMoving && !isRotating) {
     return;
   }
 
   emitMovingTimer = setInterval(() => {
     streamMovingSignal(socketEmit, dir);
   }, MOVING_EMITING_TIME_FRAME);
-}
+};
 
 const BotControllerComponent = () => {
   const verticalDirection = useRef('');

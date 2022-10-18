@@ -2,9 +2,12 @@ import type { NextPage } from 'next';
 import { EventData, JoystickOutputData } from 'nipplejs';
 import { useMemo } from 'react';
 import { CameraPanTilt } from '../../features/bot-controller/camera-pan-tilt/camera-pan-tilt';
+import CloseIcon from '@mui/icons-material/Close';
 import { MovingPad } from '../../features/bot-controller/moving-pad/moving-pad';
 import { SOCKET_EVENT_NAMES, useSocket } from '../../hooks/use-socket';
 import styles from './camera-pantilt.module.scss';
+import { IconButton } from '@mui/material';
+import { useRouter } from 'next/router';
 
 const MOVING_STREAMING_TIME_FRAME = 500; //milisecond
 
@@ -14,7 +17,7 @@ export interface IPanTiltDirection {
 }
 
 let movingTimer: NodeJS.Timer | null;
-let nextMovingTime: number = 0;
+let nextMovingTime = 0;
 const streamMovingSignal = (
   socketEmit: <T>(event: string, data?: T) => void,
   dir: IPanTiltDirection,
@@ -22,9 +25,8 @@ const streamMovingSignal = (
   if (!socketEmit) {
     return;
   }
-  
 
-  const currentTime = (new Date()).getTime();
+  const currentTime = new Date().getTime();
   const timeLeftToNextTick = nextMovingTime - currentTime;
   if (timeLeftToNextTick <= 0) {
     // there is no moving signal already
@@ -44,28 +46,41 @@ const streamMovingSignal = (
 };
 
 const CameraPanTiltPage: NextPage = () => {
+  const router = useRouter();
   const { socketEmit } = useSocket();
   const rightPadListeners = useMemo(
     () => ({
-        move: (ev: EventData, data: JoystickOutputData) => {
-            const vector = data.vector;
-            streamMovingSignal(socketEmit, vector);
-        },
-        end: () => {
-            console.log('end');
-        },
+      move: (ev: EventData, data: JoystickOutputData) => {
+        const vector = data.vector;
+        streamMovingSignal(socketEmit, vector);
+      },
+      end: () => {
+        console.log('end');
+      },
     }),
-  [],
+    [socketEmit],
   );
 
-  const rightOptions = useMemo(() => ({ restJoystick: false, dynamicPage: true }), []);
+  const rightOptions = useMemo(
+    () => ({ restJoystick: false, dynamicPage: true }),
+    [],
+  );
   return (
     <div className={styles.container}>
+      <IconButton
+        className={styles.closeButton}
+        onClick={() => {
+          // TODO: use react route
+          window.location.href = '/';
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
       <CameraPanTilt />
       <div className={styles.movingPadContainer}>
         <div></div>
         <MovingPad
-          joyStickId="rightPad"
+          joyStickId="camerapantilt"
           managerListeners={rightPadListeners}
           options={rightOptions}
         />
