@@ -136,8 +136,8 @@ const BotControllerComponent = () => {
     [onDirection],
   );
 
-  const leftOptions = useMemo(() => ({ lockY: true }), []);
-  const rightOptions = useMemo(() => ({ lockX: true }), []);
+  const leftOptions = useMemo(() => ({ lockY: true, dynamicPage: true }), []);
+  const rightOptions = useMemo(() => ({ lockX: true, dynamicPage: true }), []);
 
   return (
     <div className={styles.botController}>

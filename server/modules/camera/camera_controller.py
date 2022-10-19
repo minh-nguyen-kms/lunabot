@@ -11,12 +11,14 @@ class CameraController():
         self.port = port
 
         self.streamer = None
-        self.thread = None
+        self.streaming_data = None
+        self.thread = None        
 
         self.event_bus = event_bus
         event_bus.on(EventNames.CAMERA_START_STREAMING, self.on_camera_start_streaming)
         event_bus.on(EventNames.CAMERA_STOP_STREAMING, self.on_camera_stop_streaming)
         event_bus.on(EventNames.CAMERA_IS_STREAMING, self.on_camera_is_streaming)
+        event_bus.on(EventNames.CAMERA_GET_STATUS, self.on_camera_get_status)
     
     def __del__(self):
         self.event_bus.off(EventNames.CAMERA_START_STREAMING, self.on_camera_start_streaming)
@@ -30,10 +32,18 @@ class CameraController():
         self.stop_streaming()
 
     def on_camera_is_streaming(self, data):
+        self.streaming_data = data
         self.event_bus.emit(EventNames.SOCKET_BROAD_CAST, {
             "event": EventNames.CAMERA_IS_STREAMING,
             "data": data
         })
+
+    def on_camera_get_status(self, *args):
+        if self.streamer is not None:
+            self.event_bus.emit(EventNames.SOCKET_BROAD_CAST, {
+                "event": EventNames.CAMERA_IS_STREAMING,
+                "data": self.streaming_data
+            })
 
     def start_streaming(self):
         print('Start streaming thread')
@@ -50,3 +60,4 @@ class CameraController():
         if self.streamer is not None:
             self.streamer.stop_streaming()
             self.streamer = None 
+            self.streaming_data = None

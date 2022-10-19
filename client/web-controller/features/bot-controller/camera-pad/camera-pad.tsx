@@ -25,6 +25,7 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
     const loadSocket = async () => {
       socket = await waitSocketConnect();
       socket.addEventListener('message', onSocketMessage);
+      socketEmit(SOCKET_EVENT_NAMES.CAMERA.CAMERA_GET_STATUS);
     };
     loadSocket();
 
@@ -33,7 +34,7 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
         socket.removeEventListener('message', onSocketMessage);
       }
     };
-  }, [waitSocketConnect]);
+  }, [waitSocketConnect, socketEmit]);
   return (
     <>
       {streamUrl ? (

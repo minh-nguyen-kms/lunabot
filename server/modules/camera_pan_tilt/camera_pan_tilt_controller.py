@@ -19,8 +19,18 @@ class CameraPanTiltController():
         
         self.servo1_pin = 23
         self.servo2_pin = 24
+
+        # Auto stop all motor after 1000ms in case lost signal from socket
+        self.auto_stop_time_duration = 1000
+
+        # Controlling variables
+        self.is_life_cycle_runing = False
+        # self.auto_stop_time = 0
+        # self.is_stoped = True
         
-        event_bus.on(EventNames.CAMERA_PANTILT, self.on_pantilt_move)
+        # Event handlers
+        event_bus.on(EventNames.CAMERA_PANTILT_MOVE, self.on_pantilt_move)
+        event_bus.on(EventNames.CAMERA_PANTILT_STOP, self.on_pantilt_stop)
 
     def on_pantilt_move(self, data):
         x = data.get('x')
@@ -31,6 +41,13 @@ class CameraPanTiltController():
         self.turn_servo(self.servo1_pin, -x)
         self.turn_servo(self.servo2_pin, -y)
 
+        # # set auto stop time to next period
+        # current_time = datetime.now().timestamp() * 1000
+        # self.auto_stop_time = current_time + self.auto_stop_time_duration
+
+    def on_pantilt_stop(self, data):
+        self.stop_servo(self.servo1_pin)
+        self.stop_servo(self.servo2_pin)
 
     def stop_litening(self):
         self.is_life_cycle_runing = False
@@ -47,6 +64,8 @@ class CameraPanTiltController():
         pulse = 1500 + vector * 1000
         self.pwm.set_servo_pulsewidth(servo, pulse)
 
+    def stop_servo(self, servo):
+        self.pwm.set_servo_pulsewidth(servo, 0)
 
     def start_listening(self):
         self.log.info('Start Camera Pan Tilt controller')
@@ -56,5 +75,11 @@ class CameraPanTiltController():
         os.system('sudo pigpiod')
         time.sleep(1)
         self.pwm = pigpio.pi()
+
+        self.turn_servo(self.servo1_pin, 0)
+        self.turn_servo(self.servo2_pin, 0)
+        time.sleep(1)
+        self.stop_servo(self.servo1_pin)
+        self.stop_servo(self.servo2_pin)
 
         return
