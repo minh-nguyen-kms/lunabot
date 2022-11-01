@@ -3,6 +3,8 @@ import socketserver
 import logging
 from http import server
 
+from libs.images.image_utils import brightness
+
 
 class Streamer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
@@ -44,6 +46,7 @@ class StreamProps(server.BaseHTTPRequestHandler):
                     while True:
                         rc,img = self.capture.read()
                         img = cv2.rotate(img, cv2.ROTATE_180)
+                        img = brightness(img)
                         frame = cv2.imencode('.JPEG', img,[cv2.IMWRITE_JPEG_QUALITY,self.quality])[1].tobytes()
                         self.wfile.write(b'--FRAME\r\n')
                         self.send_header('Content-Type', 'image/jpeg')
