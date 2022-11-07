@@ -1,5 +1,6 @@
 
 #!/usr/bin/python
+import asyncio
 from datetime import datetime
 import json
 import logging
@@ -33,15 +34,61 @@ class MotorController():
         self.auto_stop_time = 0
         self.is_stoped = True
 
+        # Distance variables
+        self.last_l_speed = 0
+        self.last_r_speed = 0
+        self.min_distance = 15 # cm
+        self.distance = -1
+
+        # Register event
         event_bus.on(EventNames.MOVING, self.on_moving)
+        event_bus.on(EventNames.ULTRASONIC_ON_MEAUSRE, self.on_ultrasonic_on_measure)
 
     def __del__(self):
         self.stop_motor()
         self.log.info(f'Cleanup')
 
+    def get_direction(self, l_speed, r_speed):
+        if (l_speed == 0 and r_speed == 0):
+            return 'STOP'
+        if (l_speed > 0 and r_speed > 0):
+            return 'FORWARD'
+        if (l_speed < 0 and r_speed < 0):
+            return 'BACKWARD'
+        if (l_speed > 0 and r_speed < 0):
+            return 'RIGHT'
+        if (l_speed < 0 and r_speed > 0):
+            return 'LEFT'
+        return 'UNKNOWN'
+
+    def check_and_stop_mortor_on_short_distance(self):
+        direction = self.get_direction(self.last_l_speed, self.last_r_speed)
+        isShortDistance = self.distance > 0 and self.distance <= self.min_distance 
+
+        # Check distance if too close to the wall
+        if(isShortDistance and direction == 'FORWARD'):
+            self.log.debug(f'Too close to the wall')
+            self.stop_motor()
+            return True
+        return False
+
+    def on_ultrasonic_on_measure(self, data):
+        self.distance = data.get('distance')
+
+        # Check distance if too close to the wall
+        self.check_and_stop_mortor_on_short_distance();
+
     def run_motor(self, x_speed, y_speed):
+        # Calculate speed for each motor
         l_speed = y_speed + x_speed
         r_speed = y_speed - x_speed
+
+        self.last_l_speed = l_speed
+        self.last_r_speed = r_speed
+
+        # Check distance if too close to the wall
+        if self.check_and_stop_mortor_on_short_distance():
+            return
 
         # self.log.debug(f'{l_speed} - {r_speed}')
         self.motor.run(self.l_motor, l_speed * self.l_motor_speed_adjustment)
@@ -51,12 +98,21 @@ class MotorController():
         self.motor.stop(self.l_motor)
         self.motor.stop(self.r_motor)
         self.is_stoped = True
+
+        # ask ultrasonic to stop measure and clear last distance
+        self.event_bus.emit(EventNames.ULTRASONIC_STOP_MEAUSRE, {})
+
         self.log.debug('All Motors stoped')
 
     def on_moving(self, data):
         x_speed = data.get('xSpeed')
         y_speed = data.get('ySpeed')
         # self.log.debug(f'x_speed: {x_speed} - y_speed: {y_speed}')
+
+        # # Ask ultrasonic to start measure
+        self.event_bus.emit(EventNames.ULTRASONIC_START_MEAUSRE, {})
+
+        # Run motor
         self.run_motor(x_speed, y_speed)
         self.is_stoped = False
 
@@ -85,6 +141,10 @@ class MotorController():
 
     def start_listening(self):
         self.log.info('Start Motor controller')
+
+        # # Ask ultrasonic to start measure
+        # self.event_bus.emit(EventNames.ULTRASONIC_START_MEAUSRE, {})
+
         self.is_life_cycle_runing = True
         self.thread = Thread(target=self.runLifeCycle,args=())
         self.thread.daemon = True

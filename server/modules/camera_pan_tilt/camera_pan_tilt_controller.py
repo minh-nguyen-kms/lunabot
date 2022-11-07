@@ -4,10 +4,8 @@ from datetime import datetime
 import json
 import logging
 from threading import Thread
-import RPi.GPIO as GPIO
 import pigpio
 import time
-import os
 
 from libs.event_bus.event_bus import EventBus
 from libs.event_bus.event_names import EventNames
@@ -71,9 +69,6 @@ class CameraPanTiltController():
         self.log.info('Start Camera Pan Tilt controller')
         self.is_life_cycle_runing = True
 
-        # Start pigpiod service
-        os.system('sudo pigpiod')
-        time.sleep(1)
         self.pwm = pigpio.pi()
 
         self.turn_servo(self.servo1_pin, 0)

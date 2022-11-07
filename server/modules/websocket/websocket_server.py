@@ -52,7 +52,7 @@ class WebsocketServer():
 
     def on_message_received(self, ws, message):
         addr = ws.remote_address
-        self.log.debug(f'{addr}: "{message}"')
+        # self.log.debug(f'{addr}: "{message}"')
 
         msg = json.loads(message);
         event = msg.get('event', None);
@@ -60,5 +60,5 @@ class WebsocketServer():
             self.event_bus.emit(event, msg.get('data', None))
 
     def on_socket_broad_cast(self, data):
-        self.log.info(f'SOCKET_BROAD_CAST: "{data}"')
+        # self.log.info(f'SOCKET_BROAD_CAST: "{data}"')
         websockets.broadcast(self.clientsSet, json.dumps(data))
