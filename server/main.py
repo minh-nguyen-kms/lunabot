@@ -40,9 +40,9 @@ async def main():
     pantilt = CameraPanTiltController(event_bus=event_bus)
     pantilt.start_listening()
 
-    #init ultra sonic
-    ultraSonic = UltraSonicController(event_bus=event_bus)
-    await ultraSonic.start_listening()
+    # #init ultra sonic
+    # ultraSonic = UltraSonicController(event_bus=event_bus)
+    # await ultraSonic.start_listening()
 
     #init motor
     motor = MotorController(event_bus=event_bus)

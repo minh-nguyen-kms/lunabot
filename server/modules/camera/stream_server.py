@@ -62,11 +62,11 @@ class StreamServer():
             capture = cv2.VideoCapture(0)
             self.capture = capture
             capture.set(cv2.CAP_PROP_BUFFERSIZE,4)
-            capture.set(cv2.CAP_PROP_FRAME_WIDTH,640)
-            capture.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
-            capture.set(cv2.CAP_PROP_FPS,30)
+            capture.set(cv2.CAP_PROP_FRAME_WIDTH,1280)
+            capture.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
+            capture.set(cv2.CAP_PROP_FPS,10)
             StreamProps.set_Capture(StreamProps,capture)
-            StreamProps.set_Quality(StreamProps,90)
+            StreamProps.set_Quality(StreamProps,80)
             
             server = ps.Streamer(address,StreamProps)
             self.server = server

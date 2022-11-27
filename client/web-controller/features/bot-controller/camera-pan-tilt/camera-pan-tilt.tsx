@@ -80,7 +80,6 @@ export const CameraPanTilt: NextPage = () => {
       >
         <CloseIcon htmlColor="#fff" />
       </IconButton>
-      {/* <CameraPanTilt /> */}
       <CameraPad />
       <div className={styles.movingPadContainer}>
         <div></div>
