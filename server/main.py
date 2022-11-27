@@ -11,6 +11,7 @@ from libs.network import utils as network
 from libs.event_bus.event_bus import EventBus
 from libs.event_bus.event_names import EventNames
 from modules.camera.camera_controller import CameraController
+from modules.audio.mic_controller import MicController
 from modules.websocket.websocket_server import WebsocketServer
 from modules.mortor.motor_controller import MotorController
 from modules.system.system_controller import SystemController
@@ -28,6 +29,10 @@ async def main():
     os.system('sudo pigpiod')
     time.sleep(1)
 
+    # #init mic
+    mic = MicController(event_bus=event_bus, host_name=ipAddr, port=9103)
+    event_bus.emit(EventNames.MIC_START_STREAMING)
+    
     #init systemcontroller
     systemCtrl = SystemController(event_bus=event_bus)
     systemCtrl.start_listening()

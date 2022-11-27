@@ -8,15 +8,17 @@ export interface ICameraPadProps {
 }
 const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
   const [streamUrl, setStreamUrl] = useState('');
+  const [audioUrl, setAudioUrl] = useState('');
   const [isLoadingCamera, setIsLoadingCamera] = useState(false);
   const { waitSocketConnect, socketEmit } = useSocket();
+
   useEffect(() => {
     let socket: ReconnectingWebSocket;
     const onSocketMessage = (ev: MessageEvent<any>) => {
       const msg = JSON.parse(ev.data ?? '{}');
       if (msg?.event === SOCKET_EVENT_NAMES.CAMERA.CAMERA_IS_STREAMING) {
-        const hostName = window.location.hostname;
         const data = JSON.parse(msg.data ?? '{}');
+        const hostName = window.location.hostname;
         const url = `http://${hostName ?? data?.host}:${data?.port}`;
         setStreamUrl(url);
         setIsLoadingCamera(false);
@@ -35,11 +37,23 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
       }
     };
   }, [waitSocketConnect, socketEmit]);
+
+  useEffect(() => {
+    const hostName = window.location.hostname;
+    const url = `http://${hostName}:9103/audio`;
+    setAudioUrl(url);
+  }, []);
+
   return (
     <>
       {streamUrl ? (
         <>
           <iframe className={styles.videoContainer} src={streamUrl} />
+          {audioUrl && (
+            <audio controls autoPlay className={styles.audio}>
+              <source src={audioUrl} />
+            </audio>
+          )}
         </>
       ) : (
         <div className="screen-center">
