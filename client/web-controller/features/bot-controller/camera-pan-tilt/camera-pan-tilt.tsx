@@ -1,12 +1,14 @@
 import type { NextPage } from 'next';
 import { EventData, JoystickOutputData } from 'nipplejs';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './camera-pan-tilt.module.scss';
-import { IconButton } from '@mui/material';
+import { IconButton, SpeedDial, SpeedDialAction } from '@mui/material';
 import { useRouter } from 'next/router';
 import { CameraPad } from '../camera-pad/camera-pad';
 import { MovingPad } from '../moving-pad/moving-pad';
+import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import { SOCKET_EVENT_NAMES, useSocket } from '../../../hooks/use-socket';
 
 const MOVING_STREAMING_TIME_FRAME = 500; //milisecond
@@ -48,6 +50,11 @@ const streamMovingSignal = (
 export const CameraPanTilt: NextPage = () => {
   const router = useRouter();
   const { socketEmit } = useSocket();
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const rightPadListeners = useMemo(
     () => ({
       move: (ev: EventData, data: JoystickOutputData) => {
@@ -70,6 +77,7 @@ export const CameraPanTilt: NextPage = () => {
   );
   return (
     <div className={styles.container}>
+      <CameraPad />
       <IconButton
         className={styles.closeButton}
         onClick={() => {
@@ -80,7 +88,6 @@ export const CameraPanTilt: NextPage = () => {
       >
         <CloseIcon htmlColor="#fff" />
       </IconButton>
-      <CameraPad />
       <div className={styles.movingPadContainer}>
         <div></div>
         <MovingPad
@@ -89,6 +96,24 @@ export const CameraPanTilt: NextPage = () => {
           options={rightOptions}
         />
       </div>
+      <SpeedDial
+        ariaLabel="Commands"
+        sx={{ opacity: 0.4, position: 'absolute', top: 16, right: 16 }}
+        icon={<SpeedDialIcon />}
+        onClose={handleClose}
+        onOpen={handleOpen}
+        open={open}
+        direction="left"
+      >
+        <SpeedDialAction
+          icon={<CenterFocusStrongIcon />}
+          tooltipTitle="Center View"
+          // tooltipOpen
+          onClick={() => {
+            socketEmit(SOCKET_EVENT_NAMES.CAMERA_PANTILT.CAMERA_PANTILT_CENTER_VIEW);
+          }}
+        />
+      </SpeedDial>
     </div>
   );
 };

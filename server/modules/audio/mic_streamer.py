@@ -1,5 +1,4 @@
 from flask import Flask, Response, request, render_template
-import requests
 import pyaudio
 
 def start_server(port=9103):
@@ -13,8 +12,13 @@ def start_server(port=9103):
 
     
     audio = pyaudio.PyAudio()
-    
 
+    # print devices
+    info = audio.get_host_api_info_by_index(0)
+    numdevices = info.get('deviceCount')
+    for i in range(0, numdevices):
+        if (audio.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
+            print("i = " + str(i) + ". Input Device id = " + str(i) + " - " + audio.get_device_info_by_host_api_device_index(0, i).get('name'))
 
     def genHeader(sampleRate, bitsPerSample, channels):
         datasize = 2000*10**6
@@ -37,8 +41,6 @@ def start_server(port=9103):
     def audioRoute():
         # start Recording
         def sound():
-
-            CHUNK = 1024
             sampleRate = RATE
             bitsPerSample = 16
             channels = CHANNELS
@@ -46,7 +48,7 @@ def start_server(port=9103):
 
             stream = audio.open(format=FORMAT, channels=CHANNELS,
                             rate=RATE, input=True,
-                            frames_per_buffer=CHUNK)
+                            frames_per_buffer=CHUNK) #, input_device_index=7)
             print("recording...")
             #frames = []
             first_run = True

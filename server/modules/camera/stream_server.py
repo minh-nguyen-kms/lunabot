@@ -7,6 +7,16 @@ from . import streamer as ps
 
 from libs.network import utils as network
 
+CAM_DIMENSIONS = {
+    'SD': {
+        'width': 640,
+        'height': 480
+    },
+    'HD': {
+        'width': 1280,
+        'height': 720
+    },
+}
 
 HTML="""
 <html>
@@ -20,10 +30,11 @@ HTML="""
 </html>
 """
 class StreamServer():
-    def __init__(self, event_bus, host_name, port=9000):
+    def __init__(self, event_bus, host_name, port=9000, dimension='SD'):
         self.event_bus = event_bus
         self.port = port
         self.host_name = host_name
+        self.dimension = dimension
 
         self.capture = None
         self.server = None
@@ -40,9 +51,17 @@ class StreamServer():
             self.server.socket.close()
             self.server.server_close()
             self.server = None
+        
+        self.emit_camera_is_not_streaming()
 
     def emit_camera_is_streaming(self):
         self.event_bus.emit(EventNames.CAMERA_IS_STREAMING, json.dumps({
+            "host": self.host_name,
+            "port": self.port,
+        }))
+    
+    def emit_camera_is_not_streaming(self):
+        self.event_bus.emit(EventNames.CAMERA_IS_NOT_STREAMING, json.dumps({
             "host": self.host_name,
             "port": self.port,
         }))
@@ -62,8 +81,10 @@ class StreamServer():
             capture = cv2.VideoCapture(0)
             self.capture = capture
             capture.set(cv2.CAP_PROP_BUFFERSIZE,4)
-            capture.set(cv2.CAP_PROP_FRAME_WIDTH,1280)
-            capture.set(cv2.CAP_PROP_FRAME_HEIGHT,720)
+
+            dim = CAM_DIMENSIONS[self.dimension]
+            capture.set(cv2.CAP_PROP_FRAME_WIDTH,dim['width'])
+            capture.set(cv2.CAP_PROP_FRAME_HEIGHT,dim['height'])
             capture.set(cv2.CAP_PROP_FPS,10)
             StreamProps.set_Capture(StreamProps,capture)
             StreamProps.set_Quality(StreamProps,80)

@@ -29,6 +29,7 @@ class CameraPanTiltController():
         # Event handlers
         event_bus.on(EventNames.CAMERA_PANTILT_MOVE, self.on_pantilt_move)
         event_bus.on(EventNames.CAMERA_PANTILT_STOP, self.on_pantilt_stop)
+        event_bus.on(EventNames.CAMERA_PANTILT_CENTER_VIEW, self.on_pantilt_center_view)
 
     def on_pantilt_move(self, data):
         x = data.get('x')
@@ -42,6 +43,13 @@ class CameraPanTiltController():
         # # set auto stop time to next period
         # current_time = datetime.now().timestamp() * 1000
         # self.auto_stop_time = current_time + self.auto_stop_time_duration
+
+    def on_pantilt_center_view(self, data):
+        self.turn_servo(self.servo1_pin, 0)
+        self.turn_servo(self.servo2_pin, 0)
+        time.sleep(0.5)
+        self.stop_servo(self.servo1_pin)
+        self.stop_servo(self.servo2_pin)
 
     def on_pantilt_stop(self, data):
         self.stop_servo(self.servo1_pin)

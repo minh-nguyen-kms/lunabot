@@ -21,7 +21,10 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
         const hostName = window.location.hostname;
         const url = `http://${hostName ?? data?.host}:${data?.port}`;
         setStreamUrl(url);
-        setIsLoadingCamera(false);
+        setIsLoadingCamera(false); 
+      } else if (msg?.event === SOCKET_EVENT_NAMES.CAMERA.CAMERA_IS_NOT_STREAMING) {
+        setStreamUrl('');
+        setIsLoadingCamera(false); 
       }
     };
     const loadSocket = async () => {
@@ -49,38 +52,18 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
       {streamUrl ? (
         <>
           <iframe className={styles.videoContainer} src={streamUrl} />
-          {audioUrl && (
+          {/* {audioUrl && (
             <audio controls autoPlay className={styles.audio}>
               <source src={audioUrl} />
             </audio>
-          )}
+          )} */}
         </>
       ) : (
         <div className="screen-center">
           {isLoadingCamera && <div className="lds-dual-ring"></div>}
         </div>
       )}
-      <div className={styles.commandBar}>
-        {!streamUrl && !isLoadingCamera ? (
-          <button
-            onClick={() => {
-              socketEmit(SOCKET_EVENT_NAMES.CAMERA.CAMERA_START_STREAMING);
-              setIsLoadingCamera(true);
-            }}
-          >
-            Turn On camera
-          </button>
-        ) : (
-          <button
-            onClick={() => {
-              socketEmit(SOCKET_EVENT_NAMES.CAMERA.CAMERA_STOP_STREAMING);
-              setStreamUrl('');
-            }}
-          >
-            Turn Off camera
-          </button>
-        )}
-      </div>
+      
     </>
   );
 };

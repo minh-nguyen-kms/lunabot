@@ -29,17 +29,9 @@ async def main():
     os.system('sudo pigpiod')
     time.sleep(1)
 
-    # #init mic
-    mic = MicController(event_bus=event_bus, host_name=ipAddr, port=9103)
-    event_bus.emit(EventNames.MIC_START_STREAMING)
-    
     #init systemcontroller
     systemCtrl = SystemController(event_bus=event_bus)
     systemCtrl.start_listening()
-
-    #init camera
-    camera = CameraController(event_bus=event_bus, host_name=ipAddr, port=9101)
-    # event_bus.emit(EventNames.CAMERA_START_STREAMING)
 
     #init camera pan tilt
     pantilt = CameraPanTiltController(event_bus=event_bus)
@@ -48,6 +40,15 @@ async def main():
     # #init ultra sonic
     # ultraSonic = UltraSonicController(event_bus=event_bus)
     # await ultraSonic.start_listening()
+
+
+    #init camera
+    camera = CameraController(event_bus=event_bus, host_name=ipAddr, port=9101)
+    # event_bus.emit(EventNames.CAMERA_START_STREAMING)
+
+    #  #init mic
+    # mic = MicController(event_bus=event_bus, host_name=ipAddr, port=9103)
+    # mic.start_streaming()
 
     #init motor
     motor = MotorController(event_bus=event_bus)
