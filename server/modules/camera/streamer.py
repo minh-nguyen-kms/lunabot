@@ -4,6 +4,7 @@ import logging
 from http import server
 
 from libs.images.image_utils import brightness
+from modules.camera_transformer.tranformer import ImageTransformer
 
 
 class Streamer(socketserver.ThreadingMixIn, server.HTTPServer):
@@ -11,7 +12,6 @@ class Streamer(socketserver.ThreadingMixIn, server.HTTPServer):
     daemon_threads = True
     
 class StreamProps(server.BaseHTTPRequestHandler):
-
     def set_Page(self,PAGE):
         self.PAGE = PAGE
     def set_Capture(self,capture):
@@ -41,12 +41,18 @@ class StreamProps(server.BaseHTTPRequestHandler):
             self.send_header('Pragma', 'no-cache')
             self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
             self.end_headers()
+
+            image_transfomer = ImageTransformer()
             if self.mode == 'cv2':
                 try:
                     while True:
                         rc,img = self.capture.read()
-                        img = cv2.rotate(img, cv2.ROTATE_180)
-                        img = brightness(img)
+                        # img = cv2.rotate(img, cv2.ROTATE_180)
+                        # img = brightness(img)
+
+                        # transform image before streaming
+                        img = image_transfomer.transform(img)
+
                         frame = cv2.imencode('.JPEG', img,[cv2.IMWRITE_JPEG_QUALITY,self.quality])[1].tobytes()
                         self.wfile.write(b'--FRAME\r\n')
                         self.send_header('Content-Type', 'image/jpeg')
@@ -64,7 +70,11 @@ class StreamProps(server.BaseHTTPRequestHandler):
                         
                         with self.output.condition:
                             self.output.condition.wait()
-                            frame = self.output.frame   
+                            frame = self.output.frame  
+                        
+                        # transform image before streaming
+                        frame = image_transfomer.transform(frame) 
+                        
                         self.wfile.write(b'--FRAME\r\n')
                         self.send_header('Content-Type', 'image/jpeg')
                         self.send_header('Content-Length', len(frame))

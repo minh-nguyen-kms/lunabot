@@ -48,7 +48,7 @@ def start_server(port=9103):
 
             stream = audio.open(format=FORMAT, channels=CHANNELS,
                             rate=RATE, input=True,
-                            frames_per_buffer=CHUNK) #, input_device_index=7)
+                            frames_per_buffer=CHUNK) #, input_device_index=2)
             print("recording...")
             #frames = []
             first_run = True
