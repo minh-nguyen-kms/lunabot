@@ -16,14 +16,17 @@ class CameraPanTiltController():
         self.log = logging.getLogger(self.__class__.__name__)
         self.event_bus = event_bus
         
+        # X axis
         self.servo1 = ServoDriver(6, max_pulse=2530, min_pulse=570)
         self.servo1_min_angle = 0
         self.servo1_max_angle = 1
         self.servo1_center_angle = 0
+        
+        # Y axis
         self.servo2 = ServoDriver(7, max_pulse=2600, min_pulse=500)
         self.servo2_min_angle = 0
         self.servo2_max_angle = 0.75
-        self.servo2_center_angle = 0.2
+        self.servo2_center_angle = 0.1
 
         # Auto stop all motor after 1000ms in case lost signal from socket
         self.auto_stop_time_duration = 1000

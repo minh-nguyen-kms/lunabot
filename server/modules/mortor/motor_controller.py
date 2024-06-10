@@ -24,7 +24,7 @@ class MotorController():
         # Righ motor is faster than the left
         # => slow down it a litle
         self.l_motor_speed_adjustment = 100 # 100 is the maximum
-        self.r_motor_speed_adjustment = 87
+        self.r_motor_speed_adjustment = 90
 
         # Auto stop all motor after 1000ms in case lost signal from socket
         self.auto_stop_time_duration = 1000
@@ -141,6 +141,8 @@ class MotorController():
 
     def start_listening(self):
         self.log.info('Start Motor controller')
+        
+        self.stop_motor()
 
         # # Ask ultrasonic to start measure
         # self.event_bus.emit(EventNames.ULTRASONIC_START_MEAUSRE, {})

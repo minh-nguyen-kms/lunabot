@@ -31,7 +31,8 @@ class UltraSonicController():
         self.prev = 0
         self.max_dif = 80
         self.distance = None
-        self.verbose = False
+        self.verbose = True
+        self.interval = 1
 
         # Speed of sound in cm/ms at temperature (changed from cm/s)
         self.temperature = 28
@@ -78,13 +79,13 @@ class UltraSonicController():
             """
             Send a pulse and time the echo.
             """
-            
+            print("is_start_measure: ", self.is_start_measure)
             if not self.is_start_measure:
                 return
 
             self.pi.gpio_trigger(self.pin_trigger, 10, 1) #  Send a 10 microsecond pulse on the trigger pin
             cb = self.pi.callback(self.pin_echo, pigpio.EITHER_EDGE, self.calc) #  Catch the echo pulse and pass timing to calc callback function
-            time.sleep(0.008)
+            time.sleep(self.interval)
             cb.cancel()
             if self.verbose and self.distance:
                 print("distance: ", self.distance)

@@ -14,7 +14,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 def main():
     print("this is a servo driver test code")
     # servo = ServoDriver(7, max_pulse=2600, min_pulse=500)
-    servo = ServoDriver(6, max_pulse=2600, min_pulse=500)
+    servo = ServoDriver(8, max_pulse=2300, min_pulse=700)
     
     print("turn 50%")
     servo.turn(50)

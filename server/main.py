@@ -17,6 +17,8 @@ from modules.mortor.motor_controller import MotorController
 from modules.system.system_controller import SystemController
 from modules.camera_pan_tilt.camera_pan_tilt_controller import CameraPanTiltController
 from modules.ultra_sonic.ultra_sonic_controller import UltraSonicController
+from modules.rada.rada_controller import RadaController
+from modules.auto_crawling.auto_crawling_controller import AutoCrawlingController
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -36,10 +38,16 @@ async def main():
     #init camera pan tilt
     pantilt = CameraPanTiltController(event_bus=event_bus)
     pantilt.start_listening()
+    
+    #init rada
+    rada = RadaController(event_bus=event_bus)
+    rada.start_listening()
 
     # #init ultra sonic
     # ultraSonic = UltraSonicController(event_bus=event_bus)
     # await ultraSonic.start_listening()
+    # ultraSonic.on_start_measure(None)
+    
 
 
     #init camera
@@ -53,6 +61,10 @@ async def main():
     #init motor
     motor = MotorController(event_bus=event_bus)
     motor.start_listening()
+    
+    # #init auto crawling
+    # autoCrawling = AutoCrawlingController(event_bus=event_bus)
+    # autoCrawling.start_listening()
 
     #init websocket
     websocket = WebsocketServer(event_bus=event_bus, host_name=ipAddr, port=9102)
@@ -60,4 +72,5 @@ async def main():
 
 
 if __name__=='__main__':
-    asyncio.run(main())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
