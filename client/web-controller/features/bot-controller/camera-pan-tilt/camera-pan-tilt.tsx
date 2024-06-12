@@ -77,9 +77,9 @@ export const CameraPanTilt: NextPage = () => {
   );
   return (
     <div className={styles.container}>
-      <CameraPad />
       <IconButton
         className={styles.closeButton}
+        style={{ position: 'fixed', top: 0, left: 0 }}
         onClick={() => {
           // TODO: use react route
           window.location.href = '/';
@@ -88,6 +88,7 @@ export const CameraPanTilt: NextPage = () => {
       >
         <CloseIcon htmlColor="#fff" />
       </IconButton>
+      <CameraPad />
       <div className={styles.movingPadContainer}>
         <div></div>
         <MovingPad

@@ -21,11 +21,28 @@ CAM_DIMENSIONS = {
 HTML="""
 <html>
 	<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Lunabot camera</title>
+        <style>
+            img {
+                -webkit-user-select: none; /* Safari */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+                touch-action: none; /* Disables touch events like pinch zoom and double-tap zoom */
+                -webkit-touch-callout: none; /* Disables long-press context menu on iOS */
+            }
+        </style>
 	</head>
-
 	<body style="height:100%; padding:0; margin:0">
 		<img src="stream.mjpg" autoplay playsinline style="width:100%; height:100%">
+        <script>
+            document.addEventListener('contextmenu', function(event) {
+                if (event.target.tagName === 'IMG') {
+                    event.preventDefault();
+                }
+            }, false);
+        </script>
 	</body>
 </html>
 """
