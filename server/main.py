@@ -49,14 +49,13 @@ async def main():
     # ultraSonic.on_start_measure(None)
     
 
+    #init mic
+    mic = MicController(event_bus=event_bus, host_name=ipAddr, port=9103)
+    mic.start_streaming()
 
     #init camera
     camera = CameraController(event_bus=event_bus, host_name=ipAddr, port=9101)
     # event_bus.emit(EventNames.CAMERA_START_STREAMING)
-
-    #  #init mic
-    # mic = MicController(event_bus=event_bus, host_name=ipAddr, port=9103)
-    # mic.start_streaming()
 
     #init motor
     motor = MotorController(event_bus=event_bus)

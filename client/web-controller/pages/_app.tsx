@@ -4,6 +4,7 @@ import Head from 'next/head';
 
 import './_app.scss';
 import styles from './_app.module.scss';
+import { FullScreenController } from '../features/bot-controller/full-screen-controller/FullScreenController';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -21,9 +22,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
 
-      <main className={styles.main}>
+      <main id="main" className={styles.main}>
         <Component {...pageProps} />
       </main>
+      <FullScreenController targetId="main" />
     </>
   );
 }

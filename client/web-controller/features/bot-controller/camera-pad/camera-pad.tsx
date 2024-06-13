@@ -52,11 +52,11 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
       {streamUrl ? (
         <>
           <iframe className={styles.videoContainer} src={streamUrl} />
-          {/* {audioUrl && (
+          {audioUrl && (
             <audio controls autoPlay className={styles.audio}>
               <source src={audioUrl} />
             </audio>
-          )} */}
+          )}
         </>
       ) : (
         <div className="screen-center">

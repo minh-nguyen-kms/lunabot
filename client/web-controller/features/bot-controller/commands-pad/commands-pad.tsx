@@ -2,6 +2,7 @@ import { SpeedDial } from '@mui/material';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import FitScreenIcon from '@mui/icons-material/FitScreen';
 import NestCamWiredStandIcon from '@mui/icons-material/NestCamWiredStand';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
@@ -10,9 +11,11 @@ import { useEffect, useState } from 'react';
 import { SOCKET_EVENT_NAMES, useSocket } from '../../../hooks/use-socket';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { useRouter } from 'next/router';
+import { FullScreenEventBus } from '../../../event-buses/fullscreen.event-bus';
 
 export const CommandsPad = () => {
   const router = useRouter();
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [open, setOpen] = useState(false);
   const [cameraUrl, setCameraUrl] = useState('');
   const handleOpen = () => setOpen(true);
@@ -92,15 +95,25 @@ export const CommandsPad = () => {
       <SpeedDialAction
         icon={<NestCamWiredStandIcon />}
         tooltipTitle="Camera Pan-Tilt"
-        // tooltipOpen
         onClick={() => {
           router.push('/camera-pantilt');
         }}
       />
       <SpeedDialAction
+        icon={<FitScreenIcon />}
+        tooltipTitle="Full Screen"
+        onClick={() => {
+          if(!isFullScreen) {
+            FullScreenEventBus.emitFullScreenRequest();
+          } else {
+            FullScreenEventBus.emitFullScreenExit();
+          }
+          setIsFullScreen(!isFullScreen);
+        }}
+      />
+      <SpeedDialAction
         icon={<RestartAltIcon />}
         tooltipTitle="Restart"
-        // tooltipOpen
         onClick={() => {
           socketEmit(SOCKET_EVENT_NAMES.COMMANDS.SYSTEM_RESTART);
           handleClose();

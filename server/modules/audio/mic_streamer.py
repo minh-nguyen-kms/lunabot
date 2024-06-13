@@ -8,7 +8,7 @@ def start_server(port=9103):
     FORMAT = pyaudio.paInt16
     CHANNELS = 2
     RATE = 44100
-    CHUNK = 1024
+    CHUNK = 512
 
     
     audio = pyaudio.PyAudio()
@@ -50,14 +50,13 @@ def start_server(port=9103):
                             rate=RATE, input=True,
                             frames_per_buffer=CHUNK) #, input_device_index=2)
             print("recording...")
-            #frames = []
             first_run = True
             while True:
                 if first_run:
-                    data = wav_header + stream.read(CHUNK)
+                    data = wav_header + stream.read(CHUNK, exception_on_overflow=False)
                     first_run = False
                 else:
-                    data = stream.read(CHUNK)
+                    data = stream.read(CHUNK, exception_on_overflow=False)
                 yield(data)
 
         return Response(sound(), mimetype="audio/x-wav;codec=pcm")
