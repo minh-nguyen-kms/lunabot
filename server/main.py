@@ -19,6 +19,7 @@ from modules.camera_pan_tilt.camera_pan_tilt_controller import CameraPanTiltCont
 from modules.ultra_sonic.ultra_sonic_controller import UltraSonicController
 from modules.rada.rada_controller import RadaController
 from modules.auto_crawling.auto_crawling_controller import AutoCrawlingController
+from modules.switch.light_switch_controller import LightSwitchController
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -39,9 +40,13 @@ async def main():
     pantilt = CameraPanTiltController(event_bus=event_bus)
     pantilt.start_listening()
     
-    #init rada
-    rada = RadaController(event_bus=event_bus)
-    rada.start_listening()
+    #init light switch controller
+    lightSwitch = LightSwitchController(event_bus=event_bus)
+    await lightSwitch.start_listening()
+    
+    # #init rada
+    # rada = RadaController(event_bus=event_bus)
+    # rada.start_listening()
 
     # #init ultra sonic
     # ultraSonic = UltraSonicController(event_bus=event_bus)
@@ -49,9 +54,9 @@ async def main():
     # ultraSonic.on_start_measure(None)
     
 
-    #init mic
-    mic = MicController(event_bus=event_bus, host_name=ipAddr, port=9103)
-    mic.start_streaming()
+    # #init mic
+    # mic = MicController(event_bus=event_bus, host_name=ipAddr, port=9103)
+    # mic.start_streaming()
 
     #init camera
     camera = CameraController(event_bus=event_bus, host_name=ipAddr, port=9101)
@@ -68,6 +73,7 @@ async def main():
     #init websocket
     websocket = WebsocketServer(event_bus=event_bus, host_name=ipAddr, port=9102)
     await websocket.start()
+    
 
 
 if __name__=='__main__':

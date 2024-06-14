@@ -3,6 +3,7 @@ import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FitScreenIcon from '@mui/icons-material/FitScreen';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import NestCamWiredStandIcon from '@mui/icons-material/NestCamWiredStand';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
@@ -16,6 +17,7 @@ import { FullScreenEventBus } from '../../../event-buses/fullscreen.event-bus';
 export const CommandsPad = () => {
   const router = useRouter();
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isLightOn, setIsLightOn] = useState(false);
   const [open, setOpen] = useState(false);
   const [cameraUrl, setCameraUrl] = useState('');
   const handleOpen = () => setOpen(true);
@@ -97,6 +99,18 @@ export const CommandsPad = () => {
         tooltipTitle="Camera Pan-Tilt"
         onClick={() => {
           router.push('/camera-pantilt');
+        }}
+      />
+      <SpeedDialAction
+        icon={<LightbulbIcon />}
+        tooltipTitle="Light"
+        onClick={() => {
+          if (!isLightOn) {
+            socketEmit(SOCKET_EVENT_NAMES.SWITCHS.SWITCH_LIGHT_ON);
+          } else {
+            socketEmit(SOCKET_EVENT_NAMES.SWITCHS.SWITCH_LIGHT_OFF);
+          }
+          setIsLightOn(!isLightOn);
         }}
       />
       <SpeedDialAction
