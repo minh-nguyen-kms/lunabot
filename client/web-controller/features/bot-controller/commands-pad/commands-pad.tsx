@@ -90,6 +90,10 @@ export const CommandsPad = () => {
           onClick={() => {
             socketEmit(SOCKET_EVENT_NAMES.CAMERA.CAMERA_STOP_STREAMING);
             setCameraUrl('');
+
+            // Also off the light
+            socketEmit(SOCKET_EVENT_NAMES.SWITCHS.SWITCH_LIGHT_OFF);
+            setIsLightOn(false);
           }}
         />
       }
