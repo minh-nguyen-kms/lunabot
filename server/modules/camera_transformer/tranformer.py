@@ -1,5 +1,5 @@
 import cv2
-from libs.images.image_utils import brightness, extractObjects, checkGround
+from libs.images.image_utils import brightness, extract_objects, checkGround
 
 class ImageTransformer:
     def __init__(self):
@@ -13,7 +13,7 @@ class ImageTransformer:
         # # check ground
         # img = checkGround(img)
 
-        # # extract objects
+        # extract objects
         # if (self.extract_objects_count % 2 == 0):
         #     img = extract_objects(img)
         #     self.extract_objects_count = 1

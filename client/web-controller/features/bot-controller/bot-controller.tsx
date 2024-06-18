@@ -5,6 +5,7 @@ import { memo, useCallback, useMemo, useRef } from 'react';
 import { SOCKET_EVENT_NAMES, useSocket } from '../../hooks/use-socket';
 import { CameraPad } from './camera-pad/camera-pad';
 import { CommandsPad } from './commands-pad/commands-pad';
+import { BatteryInfo } from './battery/BatteryInfo';
 
 const MOVING_STREAMING_TIME_FRAME = 100; //milisecond
 const MOVING_EMITING_TIME_FRAME = 900; //milisecond
@@ -142,6 +143,7 @@ const BotControllerComponent = () => {
   return (
     <div className={styles.botController}>
       <CommandsPad />
+      <BatteryInfo socketEmit={socketEmit} />
       <CameraPad />
       <div className={styles.movingPadContainer}>
         <MovingPad

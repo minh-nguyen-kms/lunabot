@@ -33,6 +33,10 @@ export const SOCKET_EVENT_NAMES = {
     SWITCH_LIGHT_ON: 'SWITCH_LIGHT_ON',
     SWITCH_LIGHT_OFF: 'SWITCH_LIGHT_OFF',
   },
+  BATTERY: {
+    BATTERY_INFO: 'BATTERY_INFO',
+    BATTERY_INFO_REQUEST: 'BATTERY_INFO_REQUEST',
+  },
 };
 
 export const useSocket = () => {

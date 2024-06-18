@@ -12,7 +12,7 @@ def brightness(image, contrast=1.25, brightness=50):
     frame = cv2.cvtColor(frame, cv2.COLOR_HSV2BGR)
     return frame
 
-def extract_objects1(original):
+def extract_objects_with_gauss(original):
     image = original.copy()
 
     gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
@@ -69,7 +69,7 @@ def getObjects(img, thres, nms, draw=True, objects=[]):
 
     return img,objectInfo
 
-def extractObjects(original):
+def extract_objects(original):
     image = original.copy()
     result, objectInfo = getObjects(image,0.60,0.2)
     return result

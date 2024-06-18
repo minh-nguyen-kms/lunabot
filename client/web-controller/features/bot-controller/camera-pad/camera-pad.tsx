@@ -2,6 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { SOCKET_EVENT_NAMES, useSocket } from '../../../hooks/use-socket';
 import styles from './camera-pad.module.scss';
+import { SocketEventBus } from '../../../event-buses/socket.event-bus';
 
 export interface ICameraPadProps {
   defaultValue?: string;
@@ -15,6 +16,7 @@ const CameraPadComponent = ({ defaultValue }: ICameraPadProps) => {
   useEffect(() => {
     let socket: ReconnectingWebSocket;
     const onSocketMessage = (ev: MessageEvent<any>) => {
+      SocketEventBus.emitMessage(ev);
       const msg = JSON.parse(ev.data ?? '{}');
       if (msg?.event === SOCKET_EVENT_NAMES.CAMERA.CAMERA_IS_STREAMING) {
         const data = JSON.parse(msg.data ?? '{}');

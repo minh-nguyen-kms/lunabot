@@ -9,13 +9,15 @@ const FullScreenControllerComponent = (props: IFullScreenControllerProps) => {
 
   useEffect(() => {
     const handleRequestFullScreen = () => {
-      const target = document.getElementById(targetId);
-      if (target) {
-        target.requestFullscreen();
+      const element = document.getElementById(targetId);
+      if (element && element.requestFullscreen) {
+        element.requestFullscreen();
       }
     }
     const handleExitFullScreen = () => {
-      document.exitFullscreen();
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
     }
 
     FullScreenEventBus.onFullScreenRequest(handleRequestFullScreen);

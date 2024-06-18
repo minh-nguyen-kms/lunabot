@@ -16,10 +16,8 @@ from modules.websocket.websocket_server import WebsocketServer
 from modules.mortor.motor_controller import MotorController
 from modules.system.system_controller import SystemController
 from modules.camera_pan_tilt.camera_pan_tilt_controller import CameraPanTiltController
-from modules.ultra_sonic.ultra_sonic_controller import UltraSonicController
-from modules.rada.rada_controller import RadaController
-from modules.auto_crawling.auto_crawling_controller import AutoCrawlingController
 from modules.switch.light_switch_controller import LightSwitchController
+from modules.analog_reader.battery_reader_controller import BatteryReaderController
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
@@ -65,6 +63,10 @@ async def main():
     #init motor
     motor = MotorController(event_bus=event_bus)
     motor.start_listening()
+    
+    #init battery reader
+    battery_reader = BatteryReaderController(event_bus=event_bus)
+    battery_reader.start_listening()
     
     # #init auto crawling
     # autoCrawling = AutoCrawlingController(event_bus=event_bus)
